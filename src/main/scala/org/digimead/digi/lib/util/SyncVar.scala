@@ -29,7 +29,7 @@ import org.digimead.digi.lib.log.Logging
  * faster ??? return values immediately if any
  * benchmark:
  * VAR total: 95ms
- * @volatile VAR total: 143ms
+ * \@volatile VAR total: 143ms
  * atomic total: 137ms
  * synchronized total: 245ms
  * scala SyncVar total: 920ms
