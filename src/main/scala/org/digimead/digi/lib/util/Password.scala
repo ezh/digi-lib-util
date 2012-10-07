@@ -1,4 +1,6 @@
 /**
+ * Digi-Lib-Util - utility module of all Digi applications and libraries, containing various common routines
+ *
  * Copyright (c) 2010-2012 Alexey Aksenov ezh@ezh.msk.ru
  * This file is part of the Documentum Elasticus project.
  *

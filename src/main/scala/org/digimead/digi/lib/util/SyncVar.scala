@@ -1,4 +1,6 @@
 /**
+ * Digi-Lib-Util - utility module of all Digi applications and libraries, containing various common routines
+ *
  * Copyright (c) 2012 Alexey Aksenov ezh@ezh.msk.ru
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -20,12 +22,18 @@ import java.util.concurrent.atomic.AtomicReference
 
 import org.digimead.digi.lib.log.Logging
 
-/*
+/**
  * variant of scala.concurrent.SyncVar
  * remove few possible deadlocks from isSet, get, get(timeout)
  * set weaker access permissions protected vs private
- * faster ??? return values immediately if any (benchmark needed)
- *  TODO benchmark
+ * faster ??? return values immediately if any
+ * benchmark:
+ * VAR total: 95ms
+ * \@volatile VAR total: 143ms
+ * atomic total: 137ms
+ * synchronized total: 245ms
+ * scala SyncVar total: 920ms
+ * this SyncVar total: 614ms
  */
 
 class SyncVar[A] extends Logging {
@@ -133,44 +141,27 @@ class SyncVar[A] extends Logging {
       value.get.getOrElse(null.asInstanceOf[A])
   }
 
-  def set(x: A, signalAll: Boolean = true): Unit = {
+  def set(x: A): Unit = {
     value.set(Some(x))
-    value.synchronized {
-      if (signalAll)
-        value.notifyAll
-      else
-        value.notify
-    }
+    value.synchronized { value.notifyAll }
   }
 
-  def put(x: A): Unit =
-    put(x, true)
-  def put(x: A, signalAll: Boolean): Unit = {
+  def put(x: A): Unit = {
     while (!value.compareAndSet(None, Some(x)))
       value.synchronized {
         log.traceWhere(this + " put(...) waiting, current value is " + value, Logging.Where.BEFORE)
         value.wait
         log.traceWhere(this + " put(...) running", Logging.Where.BEFORE)
       }
-    value.synchronized {
-      if (signalAll)
-        value.notifyAll
-      else
-        value.notify
-    }
+    value.synchronized { value.notifyAll }
   }
 
-  def put(x: A, timeout: Long): Unit =
-    put(x, timeout, true)
-  def put(x: A, timeout: Long, signalAll: Boolean): Unit = {
+  def put(x: A, timeout: Long): Unit = {
     if (timeout > 0) {
       var rest = timeout
       while ((if (value.compareAndSet(None, Some(x)))
         value.synchronized {
-        if (signalAll)
-          value.notifyAll
-        else
-          value.notify
+        value.notifyAll
         false
       }
       else
@@ -185,24 +176,14 @@ class SyncVar[A] extends Logging {
           rest -= waitMeasuringElapsed("put", rest)
         }
     } else if (value.compareAndSet(None, Some(x)))
-      value.synchronized {
-        if (signalAll)
-          value.notifyAll
-        else
-          value.notify
-      }
+      value.synchronized { value.notifyAll }
   }
 
   def isSet: Boolean = value.get != None
 
-  def unset(signalAll: Boolean = true): Unit = {
+  def unset(): Unit = {
     value.set(None)
-    value.synchronized {
-      if (signalAll)
-        value.notifyAll
-      else
-        value.notify
-    }
+    value.synchronized { value.notifyAll }
   }
 
   def waitUnset(timeout: Long): Boolean = {
