@@ -29,7 +29,7 @@ description := "Utility library for digi components"
 
 organization := "org.digimead"
 
-version := "0.2"
+version := "0.2.1-SNAPSHOT"
 
 crossScalaVersions := Seq("2.8.2", "2.9.0", "2.9.0-1", "2.9.1", "2.9.2")
 
@@ -69,7 +69,7 @@ resolvers += "digi-lib-slf4j" at "http://ezh.github.com/digi-lib-slf4j/releases"
 libraryDependencies ++= {
   Seq(
     "org.slf4j" % "slf4j-api" % "1.7.1",
-    "org.digimead" %% "digi-lib" % "0.2"
+    "org.digimead" %% "digi-lib" % "0.2.1-SNAPSHOT"
   )
 }
 
@@ -79,7 +79,7 @@ if (sys.env.contains("LOCAL_BUILD")) {
     libraryDependencies ++= {
       Seq(
         "org.scalatest" %% "scalatest" % "1.8" % "test",
-        "org.digimead" %% "digi-lib-slf4j" % "0.1" % "test"
+        "org.digimead" %% "digi-lib-slf4j" % "0.2-SNAPSHOT" % "test"
       )
     }
   )
