@@ -28,11 +28,12 @@ import java.nio.channels.FileChannel
 
 import scala.annotation.tailrec
 
-import org.digimead.digi.lib.aop.Loggable
-import org.digimead.digi.lib.log.Logging
+import org.digimead.digi.lib.aop.log
+import org.digimead.digi.lib.log.Loggable
+import org.digimead.digi.lib.log.logger.RichLogger.rich2slf4j
 
-object FileUtil extends Logging {
-  @Loggable
+object FileUtil extends Loggable {
+  @log
   def copyFile(sourceFile: JFile, destFile: JFile): Boolean = {
     if (!destFile.exists())
       destFile.createNewFile()
@@ -52,7 +53,7 @@ object FileUtil extends Logging {
     }
     sourceFile.length == destFile.length
   }
-  @Loggable
+  @log
   def deleteFile(dfile: JFile): Boolean =
     if (dfile.isDirectory) deleteFileRecursive(dfile) else dfile.delete
   private def deleteFileRecursive(dfile: JFile): Boolean = {
@@ -65,7 +66,7 @@ object FileUtil extends Logging {
         false
     }
   }
-  @Loggable
+  @log
   def writeToFile(file: JFile, text: String) {
     val fw = new FileWriter(file)
     try { fw.write(text) }
@@ -77,7 +78,7 @@ object FileUtil extends Logging {
    * @param in
    * @param out
    */
-  @Loggable
+  @log
   def writeToStream(in: InputStream, out: OutputStream) {
     val buffer = new Array[Byte](8192)
     @tailrec
