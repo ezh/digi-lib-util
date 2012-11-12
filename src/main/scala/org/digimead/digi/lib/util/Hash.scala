@@ -59,10 +59,17 @@
 
 package org.digimead.digi.lib.util
 
+import java.io.File
+import java.io.FileInputStream
+import java.io.InputStream
+import java.math.BigInteger
+import java.security.DigestInputStream
 import java.security.MessageDigest
-import scala.collection.mutable.ArrayBuffer
 
-object Hash {
+import org.digimead.digi.lib.log.Loggable
+import org.digimead.digi.lib.log.logger.RichLogger.rich2slf4j
+
+object Hash extends Loggable {
   private val itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   private val SALTCHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
   private val chars = Map(0 -> '0', 1 -> '1', 2 -> '2', 3 -> '3', 4 -> '4', 5 -> '5', 6 -> '6', 7 -> '7',
@@ -312,5 +319,23 @@ object Hash {
     }
     return result.toString()
   }
-
+  def fileDigest(file: File, kind: String = "MD5"): Option[String] = {
+    val md = MessageDigest.getInstance(kind)
+    var is: InputStream = new FileInputStream(file)
+    try {
+      is = new DigestInputStream(is, md)
+      val buffer = new Array[Byte](1024)
+      var read = is.read(buffer)
+      while (read != -1)
+        read = is.read(buffer)
+    } catch {
+      case e =>
+        log.error("unable to calculate digest for file: " + file + ", " + e.getMessage(), e)
+        return None
+    } finally {
+      is.close()
+    }
+    val bigInt = new BigInteger(1, md.digest())
+    Some(String.format("%32s", bigInt.toString(16)).replace(' ', '0'))
+  }
 }
