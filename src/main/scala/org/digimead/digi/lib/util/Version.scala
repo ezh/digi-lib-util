@@ -166,7 +166,7 @@ object VersionUtil {
         (".-+/,@".indexOf(c) >= 0)
     }
 
-    for (i <- Iterator.range(0, str.length); val c = str.charAt(i) if !ok(c))
+    for (i <- Iterator.range(0, str.length); c = str.charAt(i) if !ok(c))
       return Some("Invalid character for a version (" + c + ")")
 
     None
