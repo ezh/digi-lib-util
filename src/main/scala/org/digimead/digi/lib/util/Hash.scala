@@ -319,9 +319,25 @@ object Hash extends Loggable {
     }
     return result.toString()
   }
-  def fileDigest(file: File, kind: String = "MD5"): Option[String] = {
+  /** Calculate a digest */
+  def digest(file: File): Option[String] =
+    digest(file, "SHA-256")
+  /**
+   *  Calculate a digest
+   * http://docs.oracle.com/javase/1.5.0/docs/guide/security/CryptoSpec.html#AppA contains list of available kinds
+   */
+  def digest(file: File, kind: String): Option[String] =
+    digest(new FileInputStream(file), kind)
+  /** Calculate a digest */
+  def digest(stream: InputStream): Option[String] =
+    digest(stream, "SHA-256")
+  /**
+   * Calculate a digest
+   * http://docs.oracle.com/javase/1.5.0/docs/guide/security/CryptoSpec.html#AppA contains list of available kinds
+   */
+  def digest(stream: InputStream, kind: String): Option[String] = {
     val md = MessageDigest.getInstance(kind)
-    var is: InputStream = new FileInputStream(file)
+    var is: InputStream = stream
     try {
       is = new DigestInputStream(is, md)
       val buffer = new Array[Byte](1024)
@@ -330,7 +346,7 @@ object Hash extends Loggable {
         read = is.read(buffer)
     } catch {
       case e: Throwable =>
-        log.error("unable to calculate digest for file: " + file + ", " + e.getMessage(), e)
+        log.error("unable to calculate digest: " + e.getMessage(), e)
         return None
     } finally {
       is.close()
