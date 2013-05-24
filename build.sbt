@@ -70,7 +70,7 @@ libraryDependencies ++= Seq(
     "org.digimead" %% "digi-lib" % "0.2.3",
     "org.scalatest" %% "scalatest" % "1.9.1" % "test"
       excludeAll(ExclusionRule("org.scala-lang", "scala-reflect"), ExclusionRule("org.scala-lang", "scala-actors")),
-    "org.slf4j" % "slf4j-log4j12" % "1.7.1" % "test"
+    "org.slf4j" % "slf4j-log4j12" % "1.7.5" % "test"
   )
 
 parallelExecution in Test := false
