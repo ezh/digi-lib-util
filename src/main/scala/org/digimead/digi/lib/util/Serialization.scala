@@ -1,7 +1,7 @@
 /**
  * Digi-Lib-Util - utility module of all Digi applications and libraries, containing various common routines
  *
- * Copyright (c) 2012 Alexey Aksenov ezh@ezh.msk.ru
+ * Copyright (c) 2012-2013 Alexey Aksenov ezh@ezh.msk.ru
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,10 @@ import java.io.ObjectOutputStream
 
 import scala.collection.JavaConversions._
 
-import org.digimead.digi.lib.log.Logging
+import org.digimead.digi.lib.log.Loggable
+import org.digimead.digi.lib.log.logger.RichLogger.rich2slf4j
 
-object Serialization extends Logging {
+object Serialization extends Loggable {
   def serializeToList(o: java.io.Serializable): java.util.List[Byte] =
     serializeToArray(o).toList
   def serializeToArray(o: java.io.Serializable): Array[Byte] = {
@@ -46,7 +47,7 @@ object Serialization extends Logging {
     ois.close()
     Some(o.asInstanceOf[T])
   } catch {
-    case e =>
+    case e: Throwable =>
       log.error("deserialization error", e)
       None
   }

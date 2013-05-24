@@ -16,14 +16,22 @@
  * limitations under the License.
  */
 
-package org.digimead.digi.lib.util
+package org.digimead.digi.lib.aop.internal;
 
-import java.text.SimpleDateFormat
-import java.util.Date
+import org.digimead.digi.lib.aop.cache;
 
-object Util {
-  private lazy val df = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSZ")
+privileged public final aspect AspectCaching extends
+		org.digimead.digi.lib.aop.Caching {
+	public pointcut cachedAccessPoint(cache c):
+		execution(@cache * *(..)) && @annotation(c);
 
-  def dateString(date: Date) = df.format(date)
-  def dateFile(date: Date) = dateString(date).replaceAll("""[:\.]""", "_").replaceAll("""\+""", "x")
+	Object around(final cache c): cachedAccessPoint(c) {
+		Invoker aspectJInvoker = new Invoker() {
+			public Object invoke() {
+				return proceed(c);
+			}
+		};
+		return execute(aspectJInvoker, c, thisJoinPointStaticPart.toLongString(),
+				thisJoinPointStaticPart.toShortString(), thisJoinPoint.getArgs());
+	}
 }
