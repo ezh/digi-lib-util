@@ -79,8 +79,8 @@ object FileUtil extends Loggable {
    * @param out
    */
   @log
-  def writeToStream(in: InputStream, out: OutputStream) {
-    val buffer = new Array[Byte](8192)
+  def writeToStream(in: InputStream, out: OutputStream, bufferSize: Int = 8192) {
+    val buffer = new Array[Byte](bufferSize)
     @tailrec
     def next(exit: Boolean = false) {
       if (exit) {
