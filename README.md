@@ -10,29 +10,27 @@ DOCUMENTATION
 
 ### Setup
 
-Add Maven or Ivy repository:
+```scala
+libraryDependencies += "org.digimead" %% "digi-lib-util" % "0.2.3.1"
+```
+
+Maven repository
 
 ```scala
 resolvers += "digimead-maven" at "http://storage.googleapis.com/maven.repository.digimead.org/"
 ```
 
+Ivy repository
+
 ```scala
 resolvers += Resolver.url("digimead-ivy", url("http://storage.googleapis.com/ivy.repository.digimead.org/"))(Resolver.defaultIvyPatterns)
 ```
-
-Add dependency:
-
-```scala
-libraryDependencies += "org.digimead" %% "digi-lib-util" % "VERSION"
-```
-
-### [API (latest version)](http://ezh.github.com/digi-lib-util/api/)
 
 ## Target platform
 
 * Scala 2.10.1 (request for more if needed)
 * JVM 1.6+
-* The library dependencies are [Digi-Lib](https://github.com/ezh/digi-lib) and [SLF4J](http://www.slf4j.org/)
+* The library dependencies are [Digi-Lib](https://github.com/ezh/digi-lib), [SLF4J](http://www.slf4j.org/) and [Guava](http://code.google.com/p/guava-libraries/)
 
 ## Participate in the development ##
 

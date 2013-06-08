@@ -25,8 +25,7 @@ import java.io.ObjectOutputStream
 
 import scala.collection.JavaConversions._
 
-import org.digimead.digi.lib.log.Loggable
-import org.digimead.digi.lib.log.logger.RichLogger.rich2slf4j
+import org.digimead.digi.lib.log.api.Loggable
 
 object Serialization extends Loggable {
   def serializeToList(o: java.io.Serializable): java.util.List[Byte] =

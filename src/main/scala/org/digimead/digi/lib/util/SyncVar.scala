@@ -20,7 +20,7 @@ package org.digimead.digi.lib.util
 
 import java.util.concurrent.atomic.AtomicReference
 
-import org.digimead.digi.lib.log.Loggable
+import org.digimead.digi.lib.log.api.Loggable
 import org.digimead.digi.lib.log.Logging
 
 /**
@@ -47,9 +47,9 @@ class SyncVar[A] extends Loggable {
         case Some(result) => return result
         case None => true
       }) value.synchronized {
-        log.traceWhere(this + " get() waiting", Logging.Where.BEFORE)
+        log.traceWhere(this + " get() waiting", Loggable.Where.BEFORE)
         value.wait
-        log.traceWhere(this + " get() running", Logging.Where.BEFORE)
+        log.traceWhere(this + " get() running", Loggable.Where.BEFORE)
       }
       // unreachable point
       value.get.getOrElse(null.asInstanceOf[A])
@@ -134,9 +134,9 @@ class SyncVar[A] extends Loggable {
         case Some(result) => return result
         case None => true
       }) value.synchronized {
-        log.traceWhere(this + " take() waiting", Logging.Where.BEFORE)
+        log.traceWhere(this + " take() waiting", Loggable.Where.BEFORE)
         value.wait
-        log.traceWhere(this + " take() running", Logging.Where.BEFORE)
+        log.traceWhere(this + " take() running", Loggable.Where.BEFORE)
       }
       // unreachable point
       value.get.getOrElse(null.asInstanceOf[A])
@@ -150,9 +150,9 @@ class SyncVar[A] extends Loggable {
   def put(x: A): Unit = {
     while (!value.compareAndSet(None, Some(x)))
       value.synchronized {
-        log.traceWhere(this + " put(...) waiting, current value is " + value, Logging.Where.BEFORE)
+        log.traceWhere(this + " put(...) waiting, current value is " + value, Loggable.Where.BEFORE)
         value.wait
-        log.traceWhere(this + " put(...) running", Logging.Where.BEFORE)
+        log.traceWhere(this + " put(...) running", Loggable.Where.BEFORE)
       }
     value.synchronized { value.notifyAll }
   }
@@ -168,7 +168,7 @@ class SyncVar[A] extends Loggable {
       else
         true) && rest > 0)
         value.synchronized {
-          log.traceWhere(this + " put(...) waiting, current value is " + value, Logging.Where.BEFORE)
+          log.traceWhere(this + " put(...) waiting, current value is " + value, Loggable.Where.BEFORE)
           /**
            * Defending against the system clock going backward
            *  by counting time elapsed directly.  Loop required
@@ -192,7 +192,7 @@ class SyncVar[A] extends Loggable {
       var rest = timeout
       while ((if (value.get == None) return true else true) && rest > 0)
         value.synchronized {
-          log.traceWhere(this + " waitUnset(...) waiting, current value is " + value, Logging.Where.BEFORE)
+          log.traceWhere(this + " waitUnset(...) waiting, current value is " + value, Loggable.Where.BEFORE)
           /**
            * Defending against the system clock going backward
            *  by counting time elapsed directly.  Loop required
