@@ -17,7 +17,7 @@
 
 import sbt.osgi.manager._
 
-OSGiManager ++ sbt.scct.ScctPlugin.instrumentSettings
+OSGiManager // ++ sbt.scct.ScctPlugin.instrumentSettings
 
 name := "Digi-Lib-Util"
 
@@ -64,8 +64,8 @@ resolvers += "digimead-maven" at "http://storage.googleapis.com/maven.repository
 
 libraryDependencies ++= Seq(
     "com.google.guava" % "guava" % "14.0.1",
-    "org.digimead" %% "digi-lib" % "0.2.3.1",
-    "org.digimead" %% "digi-lib-test" % "0.2.2.1" % "test"
+    "org.digimead" %% "digi-lib" % "0.2.3.2",
+    "org.digimead" %% "digi-lib-test" % "0.2.2.2" % "test"
   )
 
 //
@@ -73,7 +73,5 @@ libraryDependencies ++= Seq(
 //
 
 parallelExecution in Test := false
-
-parallelExecution in sbt.scct.ScctPlugin.ScctTest := false
 
 //logLevel := Level.Debug
