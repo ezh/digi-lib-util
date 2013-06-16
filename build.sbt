@@ -64,6 +64,8 @@ resolvers += "digimead-maven" at "http://storage.googleapis.com/maven.repository
 
 libraryDependencies ++= Seq(
     "com.google.guava" % "guava" % "14.0.1",
+    "com.twitter" % "util-eval_2.10" % "6.3.6"
+      excludeAll (ExclusionRule("com.google.guava", "guava")),
     "org.digimead" %% "digi-lib" % "0.2.3.2",
     "org.digimead" %% "digi-lib-test" % "0.2.2.2" % "test"
   )

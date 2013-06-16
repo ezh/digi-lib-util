@@ -23,6 +23,9 @@ import java.io.FileWriter
 import java.io.InputStream
 import java.io.OutputStream
 
+import scala.Array.canBuildFrom
+import scala.util.matching.Regex
+
 import org.digimead.digi.lib.aop.log
 import org.digimead.digi.lib.log.api.Loggable
 
@@ -46,6 +49,32 @@ object FileUtil extends Loggable {
         false
     }
   }
+  /**
+   * Recursively list files.
+   *
+   * @param f Initial directory
+   */
+  def recursiveListFiles(f: JFile): Array[JFile] = {
+    val these = f.listFiles
+    these ++ these.filter(_.isDirectory).flatMap(recursiveListFiles(_))
+  }
+  /**
+   * Recursively list files.
+   *
+   * @param f Initial directory
+   * @param r File name regular expression filter
+   */
+  def recursiveListFiles(f: JFile, r: Regex): Array[JFile] = {
+    val these = f.listFiles
+    val good = these.filter(f => r.findFirstIn(f.getName).isDefined)
+    good ++ these.filter(_.isDirectory).flatMap(recursiveListFiles(_, r))
+  }
+  /**
+   * Write text to a file
+   *
+   * @param file Output file
+   * @param text Written content
+   */
   @log
   def writeToFile(file: JFile, text: String) {
     val fw = new FileWriter(file)
