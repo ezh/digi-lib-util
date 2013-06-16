@@ -66,8 +66,7 @@ import java.math.BigInteger
 import java.security.DigestInputStream
 import java.security.MessageDigest
 
-import org.digimead.digi.lib.log.Loggable
-import org.digimead.digi.lib.log.logger.RichLogger.rich2slf4j
+import org.digimead.digi.lib.log.api.Loggable
 
 object Hash extends Loggable {
   private val itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";

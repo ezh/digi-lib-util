@@ -19,40 +19,20 @@
 package org.digimead.digi.lib.util
 
 import java.io.{ File => JFile }
-import java.io.FileInputStream
-import java.io.FileOutputStream
 import java.io.FileWriter
 import java.io.InputStream
 import java.io.OutputStream
-import java.nio.channels.FileChannel
-
-import scala.annotation.tailrec
 
 import org.digimead.digi.lib.aop.log
-import org.digimead.digi.lib.log.Loggable
-import org.digimead.digi.lib.log.logger.RichLogger.rich2slf4j
+import org.digimead.digi.lib.log.api.Loggable
+
+import com.google.common.io.ByteStreams
+import com.google.common.io.Files
 
 object FileUtil extends Loggable {
   @log
-  def copyFile(sourceFile: JFile, destFile: JFile): Boolean = {
-    if (!destFile.exists())
-      destFile.createNewFile()
-    var source: FileChannel = null
-    var destination: FileChannel = null
-    try {
-      source = new FileInputStream(sourceFile).getChannel()
-      destination = new FileOutputStream(destFile).getChannel()
-      destination.transferFrom(source, 0, source.size())
-    } finally {
-      if (source != null) {
-        source.close()
-      }
-      if (destination != null) {
-        destination.close()
-      }
-    }
-    sourceFile.length == destFile.length
-  }
+  def copyFile(sourceFile: JFile, destFile: JFile) =
+    Files.copy(sourceFile, destFile)
   @log
   def deleteFile(dfile: JFile): Boolean =
     if (dfile.isDirectory) deleteFileRecursive(dfile) else dfile.delete
@@ -79,20 +59,6 @@ object FileUtil extends Loggable {
    * @param out
    */
   @log
-  def writeToStream(in: InputStream, out: OutputStream, bufferSize: Int = 8192) {
-    val buffer = new Array[Byte](bufferSize)
-    @tailrec
-    def next(exit: Boolean = false) {
-      if (exit) {
-        in.close()
-        out.close()
-        return
-      }
-      val read = in.read(buffer)
-      if (read > 0)
-        out.write(buffer, 0, read)
-      next(read == -1)
-    }
-    next()
-  }
+  def writeToStream(in: InputStream, out: OutputStream) =
+    ByteStreams.copy(in, out)
 }

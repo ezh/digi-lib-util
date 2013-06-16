@@ -17,7 +17,7 @@
 
 import sbt.osgi.manager._
 
-activateOSGiManager ++ sbt.scct.ScctPlugin.instrumentSettings
+OSGiManager // ++ sbt.scct.ScctPlugin.instrumentSettings
 
 name := "Digi-Lib-Util"
 
@@ -37,9 +37,9 @@ inConfig(OSGiConf)({
   import OSGiKey._
   Seq[Project.Setting[_]](
     osgiBndBundleSymbolicName := "org.digimead.digi.lib.util",
-    osgiBndBundleCopyright := "Copyright © 2011-2013 Alexey B. Aksenov/Ezh. All rights reserved.",
+    osgiBndBundleCopyright := "Copyright © 2012-2013 Alexey B. Aksenov/Ezh. All rights reserved.",
     osgiBndExportPackage := List("org.digimead.*"),
-    osgiBndImportPackage := List("!org.aspectj.lang", "*"),
+    osgiBndImportPackage := List("!org.aspectj.*", "*"),
     osgiBndBundleLicense := "http://www.apache.org/licenses/LICENSE-2.0.txt;description=The Apache Software License, Version 2.0"
   )
 })
@@ -56,22 +56,22 @@ javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-source", "1.6",
 
 if (sys.env.contains("XBOOTCLASSPATH")) Seq(javacOptions += "-Xbootclasspath:" + sys.env("XBOOTCLASSPATH")) else Seq()
 
+//
+// Custom local options
+//
+
 resolvers += "digimead-maven" at "http://storage.googleapis.com/maven.repository.digimead.org/"
 
-moduleConfigurations := {
-  val digi = "digimead" at "http://storage.googleapis.com/maven.repository.digimead.org/"
-  Seq(
-    ModuleConfiguration("org.digimead", "digi-lib", digi),
-    ModuleConfiguration("org.digimead", "digi-lib-slf4j", digi)
+libraryDependencies ++= Seq(
+    "com.google.guava" % "guava" % "14.0.1",
+    "org.digimead" %% "digi-lib" % "0.2.3.2",
+    "org.digimead" %% "digi-lib-test" % "0.2.2.2" % "test"
   )
-}
 
-libraryDependencies += "org.digimead" %% "digi-lib" % "0.2.3"
+//
+// Testing
+//
 
 parallelExecution in Test := false
-
-parallelExecution in sbt.scct.ScctPlugin.ScctTest := false
-
-//sourceDirectory in Test <<= baseDirectory / "Testing Infrastructure Is Absent"
 
 //logLevel := Level.Debug
