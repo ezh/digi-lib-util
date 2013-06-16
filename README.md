@@ -1,4 +1,4 @@
-digi-lib-util [![Build Status](https://travis-ci.org/ezh/digi-lib-util.png?branch=master)](https://travis-ci.org/ezh/digi-lib-util) [![Coverage Status](https://coveralls.io/repos/ezh/digi-lib-util/badge.png?branch=master)](https://coveralls.io/r/ezh/digi-lib-util?branch=master)
+digi-lib-util [![Build Status](https://travis-ci.org/ezh/digi-lib-util.png?branch=master)](https://travis-ci.org/ezh/digi-lib-util)
 =============
 
 Utility module of all Digi applications and libraries, containing various common routines
@@ -28,9 +28,9 @@ resolvers += Resolver.url("digimead-ivy", url("http://storage.googleapis.com/ivy
 
 ## Target platform
 
-* Scala 2.10.1 (request for more if needed)
+* Scala 2.10.2 (request for more if needed)
 * JVM 1.6+
-* The library dependencies are [Digi-Lib](https://github.com/ezh/digi-lib), [SLF4J](http://www.slf4j.org/) and [Guava](http://code.google.com/p/guava-libraries/)
+* The library dependencies are [Digi-Lib](https://github.com/ezh/digi-lib), [SLF4J](http://www.slf4j.org/) and [Twitter util.eval](https://github.com/twitter/util/tree/master/util-eval)
 
 ## Participate in the development ##
 
