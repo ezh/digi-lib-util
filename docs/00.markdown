@@ -1,0 +1,14 @@
+---
+out: index.html
+---
+
+digi-lib-util
+=============
+
+Utility module of all Digi applications and libraries, containing various common routines.
+
+<hr/>
+
+> [Latest stable version $version$]($stable$)
+
+> [Latest development version $version$]($development$)

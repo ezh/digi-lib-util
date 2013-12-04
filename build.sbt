@@ -19,7 +19,7 @@ import sbt.osgi.manager._
 
 OSGiManager // ++ sbt.scct.ScctPlugin.instrumentSettings
 
-name := "Digi-Lib-Util"
+name := "digi-lib-util"
 
 description := "Utility library for Digi components"
 
@@ -44,15 +44,17 @@ inConfig(OSGiConf)({
   )
 })
 
-crossScalaVersions := Seq("2.10.2")
+crossScalaVersions := Seq("2.10.3")
 
-scalaVersion := "2.10.2"
+scalaVersion := "2.10.3"
 
 scalacOptions ++= Seq("-encoding", "UTF-8", "-deprecation", "-unchecked", "-Xcheckinit", "-feature") ++
   (if (true || (System getProperty "java.runtime.version" startsWith "1.7")) Seq() else Seq("-optimize")) // -optimize fails with jdk7
 
 // http://vanillajava.blogspot.ru/2012/02/using-java-7-to-target-much-older-jvms.html
 javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-source", "1.6", "-target", "1.6")
+
+javacOptions in doc := Seq("-source", "1.6")
 
 if (sys.env.contains("XBOOTCLASSPATH")) Seq(javacOptions += "-Xbootclasspath:" + sys.env("XBOOTCLASSPATH")) else Seq()
 
@@ -63,7 +65,7 @@ if (sys.env.contains("XBOOTCLASSPATH")) Seq(javacOptions += "-Xbootclasspath:" +
 resolvers += "digimead-maven" at "http://storage.googleapis.com/maven.repository.digimead.org/"
 
 libraryDependencies ++= Seq(
-    "com.google.guava" % "guava" % "14.0.1",
+    "com.google.guava" % "guava" % "15.0",
     "com.twitter" % "util-eval_2.10" % "6.3.6"
       excludeAll (ExclusionRule("com.google.guava", "guava")),
     "org.digimead" %% "digi-lib" % "0.2.3.4-SNAPSHOT",
