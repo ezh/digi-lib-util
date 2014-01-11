@@ -45,7 +45,7 @@ object FileUtil extends Loggable {
     dfile.delete match {
       case true => true
       case false =>
-        log.error("unable to delete \"" + dfile + "\"")
+        log.error("Unable to delete \"" + dfile + "\".")
         false
     }
   }
