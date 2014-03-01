@@ -69,7 +69,7 @@ libraryDependencies ++= Seq(
     // .../guava-15.0.jar(com/google/common/cache/CacheBuilder.class)' is broken
     // [error] (class java.lang.RuntimeException/bad constant pool index: 0 at pos: 15214)
     "com.google.code.findbugs" % "jsr305" % "2.0.3",
-    "com.google.guava" % "guava" % "15.0",
+    "com.google.guava" % "guava" % "16.0.1",
     "org.digimead" %% "digi-lib" % "0.2.3.4-SNAPSHOT",
     "org.digimead" %% "digi-lib-test" % "0.2.2.4-SNAPSHOT" % "test"
   )
