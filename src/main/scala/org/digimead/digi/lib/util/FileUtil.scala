@@ -1,7 +1,7 @@
 /**
  * Digi-Lib-Util - utility module of all Digi applications and libraries, containing various common routines
  *
- * Copyright (c) 2012-2013 Alexey Aksenov ezh@ezh.msk.ru
+ * Copyright (c) 2012-2014 Alexey Aksenov ezh@ezh.msk.ru
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,21 +18,14 @@
 
 package org.digimead.digi.lib.util
 
-import java.io.{ File => JFile }
-import java.io.FileWriter
-import java.io.InputStream
-import java.io.OutputStream
-
+import com.google.common.io.{ ByteStreams, Files }
+import java.io.{ File ⇒ JFile, FileWriter, InputStream, OutputStream }
+import org.digimead.digi.lib.aop.log
+import org.digimead.digi.lib.log.api.XLoggable
 import scala.Array.canBuildFrom
 import scala.util.matching.Regex
 
-import org.digimead.digi.lib.aop.log
-import org.digimead.digi.lib.log.api.Loggable
-
-import com.google.common.io.ByteStreams
-import com.google.common.io.Files
-
-object FileUtil extends Loggable {
+object FileUtil extends XLoggable {
   @log
   def copyFile(sourceFile: JFile, destFile: JFile) =
     Files.copy(sourceFile, destFile)
@@ -41,10 +34,10 @@ object FileUtil extends Loggable {
     if (dfile.isDirectory) deleteFileRecursive(dfile) else dfile.delete
   private def deleteFileRecursive(dfile: JFile): Boolean = {
     if (dfile.isDirectory)
-      dfile.listFiles.foreach { f => deleteFileRecursive(f) }
+      dfile.listFiles.foreach { f ⇒ deleteFileRecursive(f) }
     dfile.delete match {
-      case true => true
-      case false =>
+      case true ⇒ true
+      case false ⇒
         log.error("Unable to delete \"" + dfile + "\".")
         false
     }
@@ -66,7 +59,7 @@ object FileUtil extends Loggable {
    */
   def recursiveListFiles(f: JFile, r: Regex): Array[JFile] = {
     val these = f.listFiles
-    val good = these.filter(f => r.findFirstIn(f.getName).isDefined)
+    val good = these.filter(f ⇒ r.findFirstIn(f.getName).isDefined)
     good ++ these.filter(_.isDirectory).flatMap(recursiveListFiles(_, r))
   }
   /**

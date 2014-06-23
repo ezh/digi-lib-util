@@ -1,7 +1,7 @@
 /**
  * Digi-Lib-Util - utility module of all Digi applications and libraries, containing various common routines
  *
- * Copyright (c) 2012-2013 Alexey Aksenov ezh@ezh.msk.ru
+ * Copyright (c) 2012-2014 Alexey Aksenov ezh@ezh.msk.ru
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,16 +18,11 @@
 
 package org.digimead.digi.lib.util
 
-import java.io.ByteArrayInputStream
-import java.io.ByteArrayOutputStream
-import java.io.ObjectInputStream
-import java.io.ObjectOutputStream
+import java.io.{ ByteArrayInputStream, ByteArrayOutputStream, ObjectInputStream, ObjectOutputStream }
+import org.digimead.digi.lib.log.api.XLoggable
+import scala.collection.JavaConversions.{ asScalaBuffer, seqAsJavaList }
 
-import scala.collection.JavaConversions._
-
-import org.digimead.digi.lib.log.api.Loggable
-
-object Serialization extends Loggable {
+object Serialization extends XLoggable {
   def serializeToList(o: java.io.Serializable): java.util.List[Byte] =
     serializeToArray(o).toList
   def serializeToArray(o: java.io.Serializable): Array[Byte] = {
@@ -46,7 +41,7 @@ object Serialization extends Loggable {
     ois.close()
     Some(o.asInstanceOf[T])
   } catch {
-    case e: Throwable =>
+    case e: Throwable ⇒
       log.error("deserialization error", e)
       None
   }

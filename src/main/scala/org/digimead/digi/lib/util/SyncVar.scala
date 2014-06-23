@@ -1,7 +1,7 @@
 /**
  * Digi-Lib-Util - utility module of all Digi applications and libraries, containing various common routines
  *
- * Copyright (c) 2012-2013 Alexey Aksenov ezh@ezh.msk.ru
+ * Copyright (c) 2012-2014 Alexey Aksenov ezh@ezh.msk.ru
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,9 +19,7 @@
 package org.digimead.digi.lib.util
 
 import java.util.concurrent.atomic.AtomicReference
-
-import org.digimead.digi.lib.log.api.Loggable
-import org.digimead.digi.lib.log.Logging
+import org.digimead.digi.lib.log.api.XLoggable
 
 /**
  * variant of scala.concurrent.SyncVar
@@ -37,19 +35,19 @@ import org.digimead.digi.lib.log.Logging
  * this SyncVar total: 614ms
  */
 
-class SyncVar[A] extends Loggable {
+class SyncVar[A] extends XLoggable {
   protected val value = new AtomicReference[Option[A]](None)
 
   def get(): A = value.get match {
-    case Some(result) => result
-    case None =>
+    case Some(result) ⇒ result
+    case None ⇒
       while (value.get match {
-        case Some(result) => return result
-        case None => true
+        case Some(result) ⇒ return result
+        case None ⇒ true
       }) value.synchronized {
-        log.traceWhere(this + " get() waiting", Loggable.Where.BEFORE)
+        log.traceWhere(this + " get() waiting", XLoggable.Where.BEFORE)
         value.wait
-        log.traceWhere(this + " get() running", Loggable.Where.BEFORE)
+        log.traceWhere(this + " get() running", XLoggable.Where.BEFORE)
       }
       // unreachable point
       value.get.getOrElse(null.asInstanceOf[A])
@@ -79,14 +77,14 @@ class SyncVar[A] extends Loggable {
    *  @param timeout     the amount of milliseconds to wait, 0 means forever
    *  @return            `None` if variable is undefined after `timeout`, `Some(value)` otherwise
    */
-  def get(timeout: Long, guard: (A) => Boolean): Option[A] = value.get match {
-    case Some(result) if (guard(result)) => Some(result)
-    case _ =>
+  def get(timeout: Long, guard: (A) ⇒ Boolean): Option[A] = value.get match {
+    case Some(result) if (guard(result)) ⇒ Some(result)
+    case _ ⇒
       var rest = timeout
       while ((value.get match {
-        case Some(result) if (guard(result)) =>
+        case Some(result) if (guard(result)) ⇒
           return Some(result)
-        case _ => true
+        case _ ⇒ true
       }) && rest > 0) {
         /**
          * Defending against the system clock going backward
@@ -108,13 +106,13 @@ class SyncVar[A] extends Loggable {
    *  @return            `None` if variable is undefined after `timeout`, `Some(value)` otherwise
    */
   def get(timeout: Long): Option[A] = value.get match {
-    case Some(result) => Some(result)
-    case _ =>
+    case Some(result) ⇒ Some(result)
+    case _ ⇒
       var rest = timeout
       while ((value.get match {
-        case Some(result) =>
+        case Some(result) ⇒
           return Some(result)
-        case _ => true
+        case _ ⇒ true
       }) && rest > 0) {
         /**
          * Defending against the system clock going backward
@@ -128,15 +126,15 @@ class SyncVar[A] extends Loggable {
   }
 
   def take(): A = value.getAndSet(None) match {
-    case Some(result) => result
-    case None =>
+    case Some(result) ⇒ result
+    case None ⇒
       while (value.getAndSet(None) match {
-        case Some(result) => return result
-        case None => true
+        case Some(result) ⇒ return result
+        case None ⇒ true
       }) value.synchronized {
-        log.traceWhere(this + " take() waiting", Loggable.Where.BEFORE)
+        log.traceWhere(this + " take() waiting", XLoggable.Where.BEFORE)
         value.wait
-        log.traceWhere(this + " take() running", Loggable.Where.BEFORE)
+        log.traceWhere(this + " take() running", XLoggable.Where.BEFORE)
       }
       // unreachable point
       value.get.getOrElse(null.asInstanceOf[A])
@@ -150,9 +148,9 @@ class SyncVar[A] extends Loggable {
   def put(x: A): Unit = {
     while (!value.compareAndSet(None, Some(x)))
       value.synchronized {
-        log.traceWhere(this + " put(...) waiting, current value is " + value, Loggable.Where.BEFORE)
+        log.traceWhere(this + " put(...) waiting, current value is " + value, XLoggable.Where.BEFORE)
         value.wait
-        log.traceWhere(this + " put(...) running", Loggable.Where.BEFORE)
+        log.traceWhere(this + " put(...) running", XLoggable.Where.BEFORE)
       }
     value.synchronized { value.notifyAll }
   }
@@ -168,7 +166,7 @@ class SyncVar[A] extends Loggable {
       else
         true) && rest > 0)
         value.synchronized {
-          log.traceWhere(this + " put(...) waiting, current value is " + value, Loggable.Where.BEFORE)
+          log.traceWhere(this + " put(...) waiting, current value is " + value, XLoggable.Where.BEFORE)
           /**
            * Defending against the system clock going backward
            *  by counting time elapsed directly.  Loop required
@@ -192,7 +190,7 @@ class SyncVar[A] extends Loggable {
       var rest = timeout
       while ((if (value.get == None) return true else true) && rest > 0)
         value.synchronized {
-          log.traceWhere(this + " waitUnset(...) waiting, current value is " + value, Loggable.Where.BEFORE)
+          log.traceWhere(this + " waitUnset(...) waiting, current value is " + value, XLoggable.Where.BEFORE)
           /**
            * Defending against the system clock going backward
            *  by counting time elapsed directly.  Loop required

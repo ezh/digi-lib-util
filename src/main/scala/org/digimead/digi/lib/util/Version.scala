@@ -31,11 +31,11 @@ class Version(val comps: List[VersionComp]) extends Ordered[Version] {
 
   override def toString(): String = {
     originalString match {
-      case Some(string) =>
+      case Some(string) ⇒
         string
-      case None =>
+      case None ⇒
         val buf = new StringBuilder();
-        for (vc <- comps) {
+        for (vc ← comps) {
           buf.append(vc)
         }
         buf.toString()
@@ -51,18 +51,18 @@ class Version(val comps: List[VersionComp]) extends Ordered[Version] {
     def cmpComps(comps1: List[VersionComp],
       comps2: List[VersionComp]): Int =
       comps1 match {
-        case Nil =>
+        case Nil ⇒
           comps2 match {
-            case Nil => 0
-            case _ => -1
+            case Nil ⇒ 0
+            case _ ⇒ -1
           }
-        case c1 :: rest1 =>
+        case c1 :: rest1 ⇒
           comps2 match {
-            case Nil => 1
-            case c2 :: rest2 =>
+            case Nil ⇒ 1
+            case c2 :: rest2 ⇒
               VersionUtil.compareComps(c1, c2) match {
-                case 0 => cmpComps(rest1, rest2)
-                case ord => ord
+                case 0 ⇒ cmpComps(rest1, rest2)
+                case ord ⇒ ord
               }
           }
       }
@@ -78,22 +78,22 @@ object VersionUtil {
    * value is as for Ordered.compareTo() .
    */
   def compareComps(c1: VersionComp, c2: VersionComp): Int = {
-    Pair(c1, c2) match {
-      case Pair(VCAlpha(s1), VCAlpha(s2)) =>
+    (c1, c2) match {
+      case (VCAlpha(s1), VCAlpha(s2)) ⇒
         s1.compareTo(s2)
-      case Pair(VCNum(n1), VCNum(n2)) =>
+      case (VCNum(n1), VCNum(n2)) ⇒
         if (n1 < n2) -1 else if (n1 > n2) 1 else 0
-      case Pair(VCSym(s1), VCSym(s2)) =>
+      case (VCSym(s1), VCSym(s2)) ⇒
         s1.compareTo(s2)
-      case Pair(VCAlpha(_), VCNum(_)) => -1
-      case Pair(VCAlpha(_), VCSym(_)) => -1
-      case Pair(VCNum(_), VCAlpha(_)) => 1
-      case Pair(VCNum(_), VCSym(_)) => -1
-      case Pair(VCSym(_), VCAlpha(_)) => 1
-      case Pair(VCSym(_), VCNum(_)) => 1 // XXX apparent compiler
+      case (VCAlpha(_), VCNum(_)) ⇒ -1
+      case (VCAlpha(_), VCSym(_)) ⇒ -1
+      case (VCNum(_), VCAlpha(_)) ⇒ 1
+      case (VCNum(_), VCSym(_)) ⇒ -1
+      case (VCSym(_), VCAlpha(_)) ⇒ 1
+      case (VCSym(_), VCNum(_)) ⇒ 1 // XXX apparent compiler
       // bug if I do _:VCSym instead
       // of VCSym(_)
-      case Pair(a, b) => throw new Exception("Unexpected comparison pair: " +
+      case (a, b) ⇒ throw new Exception("Unexpected comparison pair: " +
         a + " compared with " + b)
     }
   }
@@ -115,9 +115,9 @@ object VersionUtil {
     def addvc(start: Int, end: Int) = {
       val substr = str.substring(start, end + 1)
       val vc = ctype(substr.charAt(0)) match {
-        case 'num => VCNum(java.lang.Long.parseLong(substr))
-        case 'alpha => VCAlpha(substr)
-        case 'sym => VCSym(substr)
+        case 'num ⇒ VCNum(java.lang.Long.parseLong(substr))
+        case 'alpha ⇒ VCAlpha(substr)
+        case 'sym ⇒ VCSym(substr)
       }
       rcomps = vc :: rcomps;
     }
@@ -166,7 +166,7 @@ object VersionUtil {
         (".-+/,@".indexOf(c) >= 0)
     }
 
-    for (i <- Iterator.range(0, str.length); c = str.charAt(i) if !ok(c))
+    for (i ← Iterator.range(0, str.length); c = str.charAt(i) if !ok(c))
       return Some("Invalid character for a version (" + c + ")")
 
     None

@@ -1,7 +1,7 @@
 /**
  * Digi-Lib-Util - utility module of all Digi applications and libraries, containing various common routines
  *
- * Copyright (c) 2012-2013 Alexey Aksenov ezh@ezh.msk.ru
+ * Copyright (c) 2012-2014 Alexey Aksenov ezh@ezh.msk.ru
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -59,23 +59,19 @@
 
 package org.digimead.digi.lib.util
 
-import java.io.File
-import java.io.FileInputStream
-import java.io.InputStream
+import java.io.{ File, FileInputStream, InputStream }
 import java.math.BigInteger
-import java.security.DigestInputStream
-import java.security.MessageDigest
+import java.security.{ DigestInputStream, MessageDigest }
+import org.digimead.digi.lib.log.api.XLoggable
 
-import org.digimead.digi.lib.log.api.Loggable
-
-object Hash extends Loggable {
+object Hash extends XLoggable {
   private val itoa64 = "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
   private val SALTCHARS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
   private val chars = Map(0 -> '0', 1 -> '1', 2 -> '2', 3 -> '3', 4 -> '4', 5 -> '5', 6 -> '6', 7 -> '7',
     8 -> '8', 9 -> '9', 10 -> 'a', 11 -> 'b', 12 -> 'c', 13 -> 'd', 14 -> 'e', 15 -> 'f');
   private def convertToHex(data: Array[Byte]): String = {
     val buf = new StringBuilder();
-    for (b <- data) {
+    for (b ← data) {
       buf.append(chars(b >>> 4 & 0x0F));
       buf.append(chars(b & 0x0F));
     }
@@ -209,7 +205,7 @@ object Hash extends Loggable {
     ctx1.update(salt.getBytes())
     ctx1.update(password.getBytes())
     finalState = ctx1.digest()
-    for (pl <- password.length() until (0, -16))
+    for (pl ← password.length() until (0, -16))
       ctx.update(finalState, 0, if (pl > 16) 16 else pl)
     /* the original code claimed that finalState was being cleared
        to keep dangerous bits out of memory, but doing this is also
@@ -235,7 +231,7 @@ object Hash extends Loggable {
      *
      * (The above timings from the C version)
      */
-    for (i <- 0 until 1000) {
+    for (i ← 0 until 1000) {
       ctx1.reset()
       if ((i & 1) != 0)
         ctx1.update(password.getBytes())
@@ -280,7 +276,7 @@ object Hash extends Loggable {
     return result.toString()
   }
   def clearbits(bits: Array[Byte]): Unit =
-    for (i <- 0 until bits.length)
+    for (i ← 0 until bits.length)
       bits(i) = 0
   /**
    * This method tests a plaintext password against a md5Crypt'ed hash and returns
@@ -344,7 +340,7 @@ object Hash extends Loggable {
       while (read != -1)
         read = is.read(buffer)
     } catch {
-      case e: Throwable =>
+      case e: Throwable ⇒
         log.error("unable to calculate digest: " + e.getMessage(), e)
         return None
     } finally {
