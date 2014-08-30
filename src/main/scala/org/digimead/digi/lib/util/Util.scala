@@ -1,7 +1,7 @@
 /**
  * Digi-Lib-Util - utility module of all Digi applications and libraries, containing various common routines
  *
- * Copyright (c) 2012-2013 Alexey Aksenov ezh@ezh.msk.ru
+ * Copyright (c) 2012-2014 Alexey Aksenov ezh@ezh.msk.ru
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,11 +19,10 @@
 package org.digimead.digi.lib.util
 
 import java.io.File
-import java.net.URL
+import java.net.{ URISyntaxException, URL, URLDecoder }
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.jar.JarFile
-
 import scala.collection.JavaConversions._
 
 object Util {
@@ -37,10 +36,10 @@ object Util {
     val root = pathToBundles.toString()
     val rootLength = root.length()
     val jars = FileUtil.recursiveListFiles(pathToBundles, """.*\.jar""".r)
-    jars.map { jar =>
+    jars.map { jar ⇒
       val relative = jar.toString.substring(rootLength) match {
-        case str if str.startsWith(File.separator) => str.substring(1)
-        case str => str
+        case str if str.startsWith(File.separator) ⇒ str.substring(1)
+        case str ⇒ str
       }
       var archive: JarFile = null
       try {
@@ -52,21 +51,23 @@ object Util {
         else
           None
       } catch {
-        case e: Throwable => // Skip
+        case e: Throwable ⇒ // Skip
           None
       } finally {
         if (archive != null)
-          try { archive.close } catch { case e: Throwable => }
+          try { archive.close } catch { case e: Throwable ⇒ }
       }
     }.flatten
   }
   /** Get path to the directory with application data. */
-  def getPath(env: String, clazz: Class[_]): File = {
-    val path = Option(System.getProperty(env)).map(new URL(_)).orElse(jarLocation(clazz))
+  def getPath(env: String, clazz: Class[_], allowRelative: Boolean = false): File = {
+    val pathURL = Option(System.getProperty(env)).map(new URL(_)).orElse(jarLocation(clazz))
     // try to get jar location or get current directory
-    val result = (path match {
-      case Some(url) =>
-        val jar = new File(url.toURI())
+    val result = (pathURL match {
+      case Some(url) ⇒
+        val jar =
+          try new File(url.toURI())
+          catch { case e: URISyntaxException ⇒ new File(URLDecoder.decode(url.getPath(), io.Codec.UTF8.charSet.name())) }
         if (jar.isDirectory() && jar.exists() && jar.canWrite())
           Some(jar) // return exists
         else {
@@ -80,25 +81,32 @@ object Util {
               None
           }
         }
-      case None =>
+      case None ⇒
         None
     }) getOrElse {
       new File(".")
     }
-    if (!result.isAbsolute())
-      throw new IllegalStateException(s"Unable to get path for '$env', invalid relative path '$result'")
-    result
+    if (!result.isAbsolute()) {
+      if (allowRelative)
+        result.getCanonicalFile()
+      else
+        throw new IllegalStateException(s"Unable to get path for '$env', invalid relative path '$result'")
+    } else
+      result
   }
   /** Returns the jar location as URL if any. */
   def jarLocation(clazz: Class[_]): Option[URL] = try {
     val source = clazz.getProtectionDomain.getCodeSource
-    if (source != null)
-      Option(source.getLocation)
-    else
+    if (source != null) {
+      val sourceURI =
+        try source.getLocation.toURI
+        catch { case e: URISyntaxException ⇒ new File(URLDecoder.decode(source.getLocation.getPath(), io.Codec.UTF8.charSet.name())).toURI }
+      Option(new URL(sourceURI.toASCIIString()))
+    } else
       None
   } catch {
     // catch all possible throwables
-    case e: Throwable =>
+    case e: Throwable ⇒
       None
   }
 }

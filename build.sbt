@@ -44,9 +44,9 @@ inConfig(OSGiConf)({
   )
 })
 
-crossScalaVersions := Seq("2.11.1")
+crossScalaVersions := Seq("2.11.2")
 
-scalaVersion := "2.11.1"
+scalaVersion := "2.11.2"
 
 scalacOptions ++= Seq("-encoding", "UTF-8", "-deprecation", "-unchecked", "-Xcheckinit", "-feature")
 
