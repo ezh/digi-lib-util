@@ -5,6 +5,8 @@ Utility module for all Digi applications and libraries which containins various 
 
 [See Digi-Lib-Util documentation](http://ezh.github.io/digi-lib-util/).
 
+__Required Java 7 or higher__
+
 LICENSE
 -------
 
@@ -16,4 +18,4 @@ Please check the individual source files for details.
 Copyright
 ---------
 
-Copyright ©  2011-2013 Alexey B. Aksenov/Ezh. All rights reserved.
+Copyright ©  2011-2014 Alexey B. Aksenov/Ezh. All rights reserved.
