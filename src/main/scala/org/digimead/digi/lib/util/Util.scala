@@ -59,40 +59,43 @@ object Util {
       }
     }.flatten
   }
+  def getPath(env: String): Option[File] =
+    Option(System.getProperty(env)).flatMap(value ⇒ getPath(new URL(value), false))
+  def getPath(env: String, allowRelative: Boolean): Option[File] =
+    Option(System.getProperty(env)).flatMap(value ⇒ getPath(new URL(value), allowRelative))
+  def getPath(clazz: Class[_]): Option[File] =
+    jarLocation(clazz).flatMap(url ⇒ getPath(url, false))
+  def getPath(clazz: Class[_], allowRelative: Boolean): Option[File] =
+    jarLocation(clazz).flatMap(url ⇒ getPath(url, allowRelative))
   /** Get path to the directory with application data. */
-  def getPath(env: String, clazz: Class[_], allowRelative: Boolean = false): File = {
-    val pathURL = Option(System.getProperty(env)).map(new URL(_)).orElse(jarLocation(clazz))
-    // try to get jar location or get current directory
-    val result = (pathURL match {
-      case Some(url) ⇒
-        val jar =
-          try new File(url.toURI())
-          catch { case e: URISyntaxException ⇒ new File(URLDecoder.decode(url.getPath(), io.Codec.UTF8.charSet.name())) }
-        if (jar.isDirectory() && jar.exists() && jar.canWrite())
-          Some(jar) // return exists
-        else {
-          val jarDirectory = if (jar.isFile()) jar.getParentFile() else jar
-          if (jarDirectory.exists() && jarDirectory.canWrite())
-            Some(jarDirectory) // return exists
-          else {
-            if (jarDirectory.mkdirs()) // create
-              Some(jarDirectory)
-            else
-              None
-          }
-        }
-      case None ⇒
-        None
-    }) getOrElse {
-      new File(".")
+  def getPath(url: URL): Option[File] =
+    getPath(url: URL, false): Option[File]
+  /** Get path to the directory with application data. */
+  def getPath(url: URL, allowRelative: Boolean): Option[File] = {
+    val jar =
+      try new File(url.toURI())
+      catch { case e: URISyntaxException ⇒ new File(URLDecoder.decode(url.getPath(), io.Codec.UTF8.charSet.name())) }
+    if (jar.isDirectory() && jar.exists() && jar.canWrite())
+      Some(jar) // return exists
+    else {
+      val jarDirectory = if (jar.isFile()) jar.getParentFile() else jar
+      if (jarDirectory.exists() && jarDirectory.canWrite())
+        Some(jarDirectory) // return exists
+      else {
+        if (jarDirectory.mkdirs()) // create
+          Some(jarDirectory)
+        else
+          None
+      }
+    }.flatMap { path ⇒
+      if (!path.isAbsolute()) {
+        if (allowRelative)
+          Some(path.getCanonicalFile())
+        else
+          None
+      } else
+        Some(path)
     }
-    if (!result.isAbsolute()) {
-      if (allowRelative)
-        result.getCanonicalFile()
-      else
-        throw new IllegalStateException(s"Unable to get path for '$env', invalid relative path '$result'")
-    } else
-      result
   }
   /** Returns the jar location as URL if any. */
   def jarLocation(clazz: Class[_]): Option[URL] = try {
