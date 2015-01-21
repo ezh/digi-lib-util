@@ -18,4 +18,4 @@ Please check the individual source files for details.
 Copyright
 ---------
 
-Copyright ©  2011-2014 Alexey B. Aksenov/Ezh. All rights reserved.
+Copyright ©  2011-2015 Alexey B. Aksenov/Ezh. All rights reserved.
