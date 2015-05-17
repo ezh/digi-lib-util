@@ -35,7 +35,7 @@ version <<= (baseDirectory) { (b) => scala.io.Source.fromFile(b / "version").mkS
 
 inConfig(OSGiConf)({
   import OSGiKey._
-  Seq[Project.Setting[_]](
+  Seq(
     osgiBndBundleSymbolicName := "org.digimead.digi.lib.util",
     osgiBndBundleCopyright := "Copyright © 2012-2015 Alexey B. Aksenov/Ezh. All rights reserved.",
     osgiBndExportPackage := List("org.digimead.*"),
@@ -44,9 +44,9 @@ inConfig(OSGiConf)({
   )
 })
 
-crossScalaVersions := Seq("2.11.5")
+crossScalaVersions := Seq("2.11.6")
 
-scalaVersion := "2.11.5"
+scalaVersion := "2.11.6"
 
 scalacOptions ++= Seq("-encoding", "UTF-8", "-deprecation", "-unchecked", "-Xcheckinit", "-feature")
 
@@ -59,8 +59,8 @@ javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation")
 resolvers += "digimead-maven" at "http://storage.googleapis.com/maven.repository.digimead.org/"
 
 libraryDependencies ++= Seq(
-    "org.digimead" %% "digi-lib" % "0.3.0.2",
-    "org.digimead" %% "digi-lib-test" % "0.3.0.2" % "test"
+    "org.digimead" %% "digi-lib" % "0.3.0.3",
+    "org.digimead" %% "digi-lib-test" % "0.3.0.3" % "test"
   )
 
 //
